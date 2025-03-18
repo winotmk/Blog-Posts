@@ -37,5 +37,6 @@ jobs:
             --prune-empty-dirs \
             "./Winblog/source/_posts/" "./hugo_blog_temp/content/posts"
 
+        # 步骤 4：提交同步后的内容到 Hugo-Blog 仓库
       - name: pwd & ls
         run: pwd & ls
