@@ -1,4 +1,6 @@
-name: Sync to Hugo Blog
+# 写于2025.3.18 自此hexo与hugo双博客实现了完全github存储和部署触发（hugo会部署到oss上）
+# 触发条件为提交message里加[D]标记
+name: Sync to Blog
 
 on:
   push:
@@ -15,7 +17,7 @@ jobs:
       - name: Checkout Posts
         uses: actions/checkout@v4
 
-      # 步骤 2：克隆目标仓库（Hugo-Blog）到临时目录
+      # 步骤 2：克隆目标仓库（Hugo-Blog和Hexo-Blog）到临时目录，这里使用了--no-checkout不检出以及设置了sparse-checkout再稀疏检出
       - name: Clone Hugo Blog
         run: |
           git clone --depth 1 --branch "main" --no-checkout https://${{ secrets.PAT }}@github.com/winotmk/Hugo-Blog.git ./hugo_blog_temp
@@ -59,7 +61,7 @@ jobs:
         run: |
           git add content/posts
           if ! git diff --cached --quiet; then
-            git commit -m "Auto-update posts $(date +'%Y-%m-%d %H:%M:%S')"
+            git commit -m "Auto-update posts $(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M:%S')"
             git push https://${{ secrets.PAT }}@github.com/winotmk/Hugo-Blog.git main
           else
             echo "hugo文章无修改"
@@ -70,10 +72,8 @@ jobs:
         run: |
           git add source/_posts
           if ! git diff --cached --quiet; then
-            git commit -m "Auto-update posts $(date +'%Y-%m-%d %H:%M:%S')"
+            git commit -m "Auto-update posts $(TZ=Asia/Shanghai date +'%Y-%m-%d %H:%M:%S')"
             git push https://${{ secrets.PAT }}@github.com/winotmk/Hexo-Blog.git main
           else
             echo "hexo文章无修改"
           fi
-
-        
