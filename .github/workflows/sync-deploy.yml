@@ -1,0 +1,41 @@
+name: Sync to Hugo Blog
+
+on:
+  push:
+    branches:
+      - main  # 触发分支（根据你的实际分支名修改）
+
+jobs:
+  sync-posts:
+    runs-on: ubuntu-latest
+    # 仅在 commit message 包含 [D] 时执行
+    if: contains(github.event.head_commit.message, '[D]')
+    steps:
+      # 步骤 1：检出当前仓库（Posts）内容
+      - name: Checkout Posts
+        uses: actions/checkout@v4
+
+      # 步骤 2：克隆目标仓库（Hugo-Blog）到临时目录
+      - name: Clone Hugo Blog
+        run: |
+          git clone --depth 1 --branch "main" --no-checkout git@github.com:winotmk/Hugo-Blog.git ./hugo_blog_temp
+          cd ./hugo_blog_temp
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git config core.sparseCheckout true
+          echo content/posts > .git/info/sparse-checkout
+          git checkout main
+
+      # 步骤 3：将 Posts 内容复制到 Hugo-Blog 的 content/posts 目录
+      - name: Copy Files
+        run: |
+          cd ../
+          rsync -av --checksum --delete \
+            --include='*/' \
+            --include='*.md' \
+            --exclude='*' \
+            --prune-empty-dirs \
+            "./Winblog/source/_posts/" "./hugo_blog_temp/content/posts"
+
+      - name: pwd & ls
+        run: pwd & ls
