@@ -40,5 +40,11 @@ jobs:
             "./posts/" "./hugo_blog_temp/content/posts"
 
         # 步骤 4：提交同步后的内容到 Hugo-Blog 仓库
-      - name: pwd & ls
-        run: pwd & ls
+      - name: Push Changes
+        working-directory: ./hugo_blog_temp
+        run: |
+          git add content/posts
+          git commit -m "Auto-update posts $(date +'%Y-%m-%d %H:%M:%S')"
+          git push https://${{ secrets.PAT }}@github.com/winotmk/Hugo-Blog.git main
+
+        
