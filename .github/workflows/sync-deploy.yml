@@ -26,10 +26,18 @@ jobs:
           echo content/posts > .git/info/sparse-checkout
           git checkout main
 
-      - name: pwd & ls
-        run: pwd & ls
+      - name: Clone Hexo Blog
+        run: |
+          git clone --depth 1 --branch "main" --no-checkout https://${{ secrets.PAT }}@github.com/winotmk/Hexo-Blog.git ./hexo_blog_temp
+          cd ./hexo_blog_temp
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git config core.sparseCheckout true
+          echo source/_posts > .git/info/sparse-checkout
+          git checkout main
 
-      # 步骤 3：将 Posts 内容复制到 Hugo-Blog 的 content/posts 目录
+
+      # 步骤 3：将 Posts 内容复制到 Hugo-Blog 的 content/posts 目录,Hexo-Blog 的 source/_posts 目录
       - name: Copy Files
         run: |
           rsync -av --checksum --delete \
@@ -38,13 +46,26 @@ jobs:
             --exclude='*' \
             --prune-empty-dirs \
             "./posts/" "./hugo_blog_temp/content/posts"
+          rsync -av --checksum --delete \
+            --include='*/' \
+            --include='*.md' \
+            --exclude='*' \
+            --prune-empty-dirs \
+            "./posts/" "./hexo_blog_temp/source/_posts"
 
-        # 步骤 4：提交同步后的内容到 Hugo-Blog 仓库
-      - name: Push Changes
+        # 步骤 4：提交同步后的内容到 Hugo-Blog 仓库和 Hexo-Blog 仓库
+      - name: Push hugo
         working-directory: ./hugo_blog_temp
         run: |
           git add content/posts
           git commit -m "Auto-update posts $(date +'%Y-%m-%d %H:%M:%S')"
           git push https://${{ secrets.PAT }}@github.com/winotmk/Hugo-Blog.git main
+
+      - name: Push hexo
+        working-directory: ./hexo_blog_temp
+        run: |
+          git add source/_posts
+          git commit -m "Auto-update posts $(date +'%Y-%m-%d %H:%M:%S')"
+          git push https://${{ secrets.PAT }}@github.com/winotmk/Hexo-Blog.git main
 
         
