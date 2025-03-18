@@ -18,7 +18,7 @@ jobs:
       # 步骤 2：克隆目标仓库（Hugo-Blog）到临时目录
       - name: Clone Hugo Blog
         run: |
-          git clone --depth 1 --branch "main" --no-checkout git@github.com:winotmk/Hugo-Blog.git ./hugo_blog_temp
+          git clone --depth 1 --branch "main" --no-checkout https://${{ secrets.PAT }}@github.com/winotmk/Hugo-Blog.git ./hugo_blog_temp
           cd ./hugo_blog_temp
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
