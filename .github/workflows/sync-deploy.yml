@@ -58,14 +58,22 @@ jobs:
         working-directory: ./hugo_blog_temp
         run: |
           git add content/posts
-          git commit -m "Auto-update posts $(date +'%Y-%m-%d %H:%M:%S')"
-          git push https://${{ secrets.PAT }}@github.com/winotmk/Hugo-Blog.git main
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-update posts $(date +'%Y-%m-%d %H:%M:%S')"
+            git push https://${{ secrets.PAT }}@github.com/winotmk/Hugo-Blog.git main
+          else
+            echo "hugo文章无修改"
+          fi
 
       - name: Push hexo
         working-directory: ./hexo_blog_temp
         run: |
           git add source/_posts
-          git commit -m "Auto-update posts $(date +'%Y-%m-%d %H:%M:%S')"
-          git push https://${{ secrets.PAT }}@github.com/winotmk/Hexo-Blog.git main
+          if ! git diff --cached --quiet; then
+            git commit -m "Auto-update posts $(date +'%Y-%m-%d %H:%M:%S')"
+            git push https://${{ secrets.PAT }}@github.com/winotmk/Hexo-Blog.git main
+          else
+            echo "hexo文章无修改"
+          fi
 
         
