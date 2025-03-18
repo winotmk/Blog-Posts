@@ -32,7 +32,6 @@ jobs:
       # 步骤 3：将 Posts 内容复制到 Hugo-Blog 的 content/posts 目录
       - name: Copy Files
         run: |
-          cd ../
           rsync -av --checksum --delete \
             --include='*/' \
             --include='*.md' \
