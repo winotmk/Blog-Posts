@@ -1,13 +1,6 @@
 {
-  "$schema": "https://frontmatter.codes/frontmatter.schema.json",
-  "frontMatter.framework.id": "hugo",
-  "frontMatter.content.publicFolder": "static",
-  "frontMatter.preview.host": "http://localhost:1313",
-  "frontMatter.content.pageFolders": [
-    {
-      "title": "md_for_hexo_workspace",
-      "path": "[[workspace]]"
-    }
+  "categories": [
+    "软件"
   ],
   "frontMatter.taxonomy.contentTypes": [
     {
@@ -57,6 +50,12 @@
           "type": "image"
         }
       ]
+    }
+  ],
+  "frontMatter.content.pageFolders": [
+    {
+      "title": "posts",
+      "path": "[[workspace]]/posts"
     }
   ]
 }
